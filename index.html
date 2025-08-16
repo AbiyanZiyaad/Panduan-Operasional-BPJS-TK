@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals (Stone, Slate, Teal) -->
-    <!-- Application Structure Plan: Aplikasi ini dirancang dengan struktur berbasis tugas (task-oriented) untuk mempercepat alur kerja agen. Navigasi utama dibagi menjadi lima area fungsional: 'Reservasi', 'Perubahan Tiket', 'Validasi TO', 'Regulasi Tambahan', dan 'Penanganan Penolakan'. Pendekatan ini dipilih karena agen biasanya mencari informasi berdasarkan tugas spesifik yang sedang dikerjakan. 'Reservasi' menggunakan sub-navigasi (tab) untuk memisahkan alur kerja Opsigo dan Email. 'Validasi TO' diubah menjadi checklist interaktif untuk mengubah dokumen pasif menjadi alat kerja aktif, meningkatkan akurasi dan efisiensi. 'Regulasi Tambahan' menampung aturan baru terkait transportasi dan akomodasi. Bagian 'Penanganan Penolakan' ditambahkan sebagai panduan umum untuk menghadapi penolakan dari tim TC. Struktur ini secara fundamental lebih intuitif dan cepat daripada menelusuri dokumen linear. -->
-    <!-- Visualization & Content Choices: Mengingat kontennya bersifat prosedural dan kualitatif, tidak ada data kuantitatif untuk divisualisasikan dengan grafik (Chart.js tidak digunakan). Sebaliknya, 'visualisasi' diwujudkan melalui arsitektur informasi dan komponen UI. Pilihan: [Informasi: Prosedur reservasi] -> [Tujuan: Membedakan alur kerja] -> [Metode: Kartu dan Tab (HTML/Tailwind)] -> [Interaksi: Klik untuk menampilkan detail] -> [Justifikasi: Mencegah kelebihan informasi dan memfokuskan pengguna]. [Informasi: Kriteria TO] -> [Tujuan: Memvalidasi kelengkapan] -> [Metode: Checklist Interaktif (HTML/JS)] -> [Interaksi: Centang item, reset] -> [Justifikasi: Mengubah referensi menjadi alat fungsional untuk mengurangi kesalahan]. [Informasi: Aturan Akomodasi/Transportasi] -> [Tujuan: Menyajikan aturan yang relevan] -> [Metode: Kartu/Blok Teks (HTML/Tailwind)] -> [Interaksi: Navigasi antar bagian utama] -> [Justifikasi: Menyediakan akses cepat ke pedoman spesifik]. [Informasi: Penanganan Penolakan TC] -> [Tujuan: Memberikan instruksi tindakan pasca-penolakan] -> [Metode: Blok Teks Informatif (HTML/Tailwind)] -> [Interaksi: Navigasi ke bagian ini] -> [Justifikasi: Menyoroti praktik terbaik untuk resolusi masalah]. -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang dengan struktur berbasis tugas (task-oriented) untuk mempercepat alur kerja agen. Navigasi utama dibagi menjadi enam area fungsional: 'Reservasi', 'Perubahan Tiket', 'Validasi TO', 'Regulasi Tambahan', 'Penanganan Penolakan', dan 'Invoicing'. Pendekatan ini dipilih karena agen biasanya mencari informasi berdasarkan tugas spesifik yang sedang dikerjakan. 'Reservasi' menggunakan sub-navigasi (tab) untuk memisahkan alur kerja Opsigo dan Email. 'Validasi TO' diubah menjadi checklist interaktif untuk mengubah dokumen pasif menjadi alat kerja aktif, meningkatkan akurasi dan efisiensi. 'Regulasi Tambahan' menampung aturan baru terkait transportasi dan akomodasi. Bagian 'Penanganan Penolakan' ditambahkan sebagai panduan umum untuk menghadapi penolakan dari tim TC. Bagian 'Invoicing' ditambahkan sebagai proses terpisah yang krusial. Struktur ini secara fundamental lebih intuitif dan cepat daripada menelusuri dokumen linear. -->
+    <!-- Visualization & Content Choices: Mengingat kontennya bersifat prosedural dan kualitatif, tidak ada data kuantitatif untuk divisualisasikan dengan grafik (Chart.js tidak digunakan). Sebaliknya, 'visualisasi' diwujudkan melalui arsitektur informasi dan komponen UI. Pilihan: [Informasi: Prosedur reservasi] -> [Tujuan: Membedakan alur kerja] -> [Metode: Kartu dan Tab (HTML/Tailwind)] -> [Interaksi: Klik untuk menampilkan detail] -> [Justifikasi: Mencegah kelebihan informasi dan memfokuskan pengguna]. [Informasi: Kriteria TO] -> [Tujuan: Memvalidasi kelengkapan] -> [Metode: Checklist Interaktif (HTML/JS)] -> [Interaksi: Centang item, reset] -> [Justifikasi: Mengubah referensi menjadi alat fungsional untuk mengurangi kesalahan]. [Informasi: Aturan Akomodasi/Transportasi] -> [Tujuan: Menyajikan aturan yang relevan] -> [Metode: Kartu/Blok Teks (HTML/Tailwind)] -> [Interaksi: Navigasi antar bagian utama] -> [Justifikasi: Menyediakan akses cepat ke pedoman spesifik]. [Informasi: Penanganan Penolakan TC] -> [Tujuan: Memberikan instruksi tindakan pasca-penolakan] -> [Metode: Blok Teks Informatif (HTML/Tailwind)] -> [Interaksi: Navigasi ke bagian ini] -> [Justifikasi: Menyoroti praktik terbaik untuk resolusi masalah]. [Informasi: Proses Invoicing] -> [Tujuan: Memberikan panduan detail invoicing] -> [Metode: Daftar Poin (HTML/Tailwind)] -> [Interaksi: Navigasi ke bagian ini] -> [Justifikasi: Menyediakan referensi cepat untuk proses penagihan]. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -191,6 +191,9 @@
             <button data-target="penanganan-penolakan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
                 Penanganan Penolakan
             </button>
+            <button data-target="invoicing" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
+                Invoicing
+            </button>
         </nav>
 
         <main id="main-content">
@@ -213,6 +216,45 @@
                         </nav>
                     </div>
                     <!-- Tab Content -->
+                    <div id="email" class="tab-content hidden">
+                        <div class="space-y-4">
+                            <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">✈️ Maskapai yang Tidak Ada di Opsigo</h3>
+                                <p class="text-slate-700 mt-1">Pemesanan seperti biasa, dan wajib melampirkan <strong>TO</strong>.</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">🚄 Kereta Cepat WHOOSH</h3>
+                                <p class="text-slate-700 mt-1">Pemesanan seperti biasa, dan wajib melampirkan <strong>TO</strong>.</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">🌍 Perjalanan Dinas Luar Negeri (PDLN)</h3>
+                                <ul class="list-disc list-inside space-y-1 text-slate-700 mt-1">
+                                    <li>Wajib melampirkan <strong>TO</strong>.</li>
+                                    <li>Wajib CC email ke: <strong>travel.management@bpjsketenagakerjaan.go.id</strong>.</li>
+                                    <li><strong>Konfirmasi terlebih dahulu</strong> dengan tim Travel Management (TM) sebelum proses penerbitan.</li>
+                                    <li>Perhatikan pagu hotel (dalam USD).</li>
+                                    <li>Pada saat invoicing, sertakan capture rate USD yang ada tanggalnya.</li>
+                                </ul>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">🚚 Bantuan Transportasi 3T</h3>
+                                <ul class="list-disc list-inside space-y-1 text-slate-700 mt-1">
+                                    <li>Wajib melampirkan <strong>TO</strong>.</li>
+                                    <li>Membutuhkan <strong>persetujuan dari HCP/TM</strong> sebelum proses penerbitan.</li>
+                                    <li>Wajib CC email ke:
+                                        <ul class="list-none ml-4 mt-1">
+                                            <li>- TM: travel.management@bpjsketenagakerjaan.go.id</li>
+                                            <li>- HCP: mandya.cita@bpjsketenagakerjaan.go.id</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                             <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">💰 Penawaran Harga</h3>
+                                <p class="text-slate-700 mt-1">Wajib mencantumkan detail biaya secara rinci: <strong>(Selling Price + SF + VAT)</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
                     <div id="opsigo" class="tab-content active">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
@@ -273,41 +315,6 @@
                             </div>
                         </div>
                     </div>
-                    <div id="email" class="tab-content hidden">
-                        <div class="space-y-4">
-                            <div class="border border-slate-200 rounded-lg p-5">
-                                <h3 class="font-semibold text-slate-900">🚄 Kereta Cepat WHOOSH</h3>
-                                <p class="text-slate-700 mt-1">Pemesanan seperti biasa, dan wajib melampirkan <strong>TO</strong>.</p>
-                            </div>
-                            <div class="border border-slate-200 rounded-lg p-5">
-                                <h3 class="font-semibold text-slate-900">🌍 Perjalanan Dinas Luar Negeri (PDLN)</h3>
-                                <ul class="list-disc list-inside space-y-1 text-slate-700 mt-1">
-                                    <li>Wajib melampirkan <strong>TO</strong>.</li>
-                                    <li>Wajib CC email ke: <strong>travel.management@bpjsketenagakerjaan.go.id</strong>.</li>
-                                    <li><strong>Konfirmasi terlebih dahulu</strong> dengan tim Travel Management (TM) sebelum proses penerbitan.</li>
-                                    <li>Perhatikan pagu hotel (dalam USD).</li>
-                                    <li>Pada saat invoicing, sertakan capture rate USD yang ada tanggalnya.</li>
-                                </ul>
-                            </div>
-                            <div class="border border-slate-200 rounded-lg p-5">
-                                <h3 class="font-semibold text-slate-900">🚚 Bantuan Transportasi 3T</h3>
-                                <ul class="list-disc list-inside space-y-1 text-slate-700 mt-1">
-                                    <li>Wajib melampirkan <strong>TO</strong>.</li>
-                                    <li>Membutuhkan <strong>persetujuan dari HCP/TM</strong> sebelum proses penerbitan.</li>
-                                    <li>Wajib CC email ke:
-                                        <ul class="list-none ml-4 mt-1">
-                                            <li>- TM: travel.management@bpjsketenagakerjaan.go.id</li>
-                                            <li>- HCP: mandya.cita@bpjsketenagakerjaan.go.id</li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                             <div class="border border-slate-200 rounded-lg p-5">
-                                <h3 class="font-semibold text-slate-900">💰 Penawaran Harga</h3>
-                                <p class="text-slate-700 mt-1">Wajib mencantumkan detail biaya secara rinci: <strong>(Selling Price + SF + VAT)</strong>.</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
@@ -326,7 +333,7 @@
                             <li>Jika tanda tangan menyusul atau ada revisi form, silakan langsung diproses apabila tamu sudah setuju.</li>
                             <li>Untuk Reschedule/Reroute, lampirkan <strong>TO terbaru</strong>, dan pastikan nomor TO berbeda dengan reservasi awal (sebelum reschedule).</li>
                             <li>Jika tamu sudah setuju, namun ada perubahan biaya atau penalty, silakan diproses saja agar biaya atau penalty tidak semakin besar. Pada saat pengiriman tiket baru atau konfirmasi refund, dapat diinformasikan biaya atau penalty terbarunya.</li>
-                            <li>Untuk saat ini, nominal biaya <em>reschedule</em> agar diinput sesuai sistem saja, tidak perlu di-<em>update</em> secara manual oleh Travel Consultant (Catatan: Ketentuan ini dapat berubah sewaktu-waktu).</li>
+                            <li>Untuk saat ini, nominal biaya <em>reschedule</em> agar diinput sesuai sistem saja, tidak perlu di-<em>up selling</em> secara manual oleh Travel Consultant (Catatan: Ketentuan ini dapat berubah sewaktu-waktu).</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
@@ -392,24 +399,29 @@
                 </div>
                 <div class="max-w-4xl mx-auto space-y-6">
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
-                        <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS DALAM NEGERI KARYAWAN</h3>
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS DALAM NEGERI KARYAWAN (PD-DN)</h3>
                         <ul class="list-disc list-inside space-y-2 text-slate-700">
                             <li>Penambahan Bagasi untuk maskapai penerbangan yang tidak menyediakan maksimal 10kg untuk satu kali penerbangan.</li>
                             <li>Jika tidak ada penerbangan langsung, untuk penerbangan <em>transit</em> maksimal di kota <em>transit</em> 1 x 24 jam.</li>
                             <li>Wajib <em>Sharing</em> Kamar untuk jabatan: Kepala Bagian/Kepala Bidang/Kepala Kantor Cabang Pembantu (KKCP)/Karyawan non Struktural.</li>
                             <li><em>Booking seat</em> berbayar dapat digunakan pejabat jenjang I untuk kepentingan pendampingan Dewan Pengawas dan Direksi BPJS Ketenagakerjaan.</li>
+                            <li>Selengkapnya ada di lampiran Peraturan Internal BPJS TK.</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
-                        <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS LUAR NEGERI KARYAWAN</h3>
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS LUAR NEGERI KARYAWAN (PD-LN)</h3>
                         <ul class="list-disc list-inside space-y-2 text-slate-700">
                             <li>Bagasi yang ditanggung untuk maskapai penerbangan yang tidak menyediakan bagasi adalah maksimal 20 kg untuk satu kali penerbangan.</li>
                             <li>Deputi/Kepala Satuan Pengawas Internal/Sekretaris Dewan Pengawas/Kepala Kantor Wilayah/Jabatan Struktural Setingkat Deputi jika melakukan pemesanan maskapai Luar Negeri yang durasi penerbangannya lebih dari 4 (empat) jam maka dapat menggunakan kelas bisnis.</li>
+                            <li>Selengkapnya ada di lampiran Peraturan Internal BPJS TK.</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
                         <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS LUAR NEGERI KARYAWAN UNTUK NEGARA BERBATASAN LANGSUNG DENGAN INDONESIA (PMI)</h3>
                         <p class="text-slate-700">Agar dipastikan untuk setiap permintaan pemesanan perjalanan dinas untuk negara berbatasan tersebut (kegiatan PMI), pada travel order juga tertulis kegiatan PMI.</p>
+                        <ul>
+                            <li>Selengkapnya ada di lampiran Peraturan Internal BPJS TK.</li>
+                        </ul>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
                         <h3 class="font-semibold text-lg text-slate-900 mb-3">Lampiran</h3>
@@ -433,6 +445,32 @@
 
                     <h3 class="font-semibold text-lg text-slate-900 mb-3">Prioritas Ketersediaan Kursi untuk Keberangkatan Mendekat</h3>
                     <p class="text-slate-700">Jika Anda hendak melakukan "Reject" untuk keberangkatan di hari yang sama atau lusa, pastikan terlebih dahulu <strong>ketersediaan kursi</strong> untuk penerbangan atau transportasi tersebut. Hal ini krusial untuk mencegah komplain di kemudian hari akibat kehabisan kursi dengan alasan penolakan dari Global Service Wisata (GSW).</p>
+                </div>
+            </section>
+
+            <!-- Section: Invoicing -->
+            <section id="invoicing" class="content-section">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Panduan Invoicing</h2>
+                    <p class="mt-1 text-slate-600">Prosedur dan detail yang diperlukan untuk proses penagihan.</p>
+                </div>
+                <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Lampiran Dokumen untuk Invoicing</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li>Itinerary/voucher hotel</li>
+                        <li>TO (Travel Order)</li>
+                        <li>Formulir Refund/Reschedule/Reroute/Void (apabila ada)</li>
+                    </ul>
+
+                    <h3 class="font-semibold text-lg text-slate-900 mt-6 mb-3">Detail Harga</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li>NTA (Net to Agent) & Selling Price normal di luar SF (Service Fee) & VAT (Value Added Tax).</li>
+                    </ul>
+
+                    <h3 class="font-semibold text-lg text-slate-900 mt-6 mb-3">Informasi Unit Kerja</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li>Menginformasikan Unit Kerja Pemesan dan Unit Kerja Pemilik Anggaran.</li>
+                    </ul>
                 </div>
             </section>
         </main>
