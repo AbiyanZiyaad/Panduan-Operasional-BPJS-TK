@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Operasional BPJS TK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Stone, Slate, Teal) -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang dengan struktur berbasis tugas (task-oriented) untuk mempercepat alur kerja agen. Navigasi utama dibagi menjadi empat area fungsional: 'Reservasi', 'Perubahan Tiket', 'Validasi TO', dan 'Regulasi Tambahan'. Pendekatan ini dipilih karena agen biasanya mencari informasi berdasarkan tugas spesifik yang sedang dikerjakan. 'Reservasi' menggunakan sub-navigasi (tab) untuk memisahkan alur kerja Opsigo dan Email. 'Validasi TO' diubah menjadi checklist interaktif untuk mengubah dokumen pasif menjadi alat kerja aktif, meningkatkan akurasi dan efisiensi. 'Regulasi Tambahan' menampung aturan baru terkait transportasi dan akomodasi. Struktur ini secara fundamental lebih intuitif dan cepat daripada menelusuri dokumen linear. -->
+    <!-- Visualization & Content Choices: Mengingat kontennya bersifat prosedural dan kualitatif, tidak ada data kuantitatif untuk divisualisasikan dengan grafik (Chart.js tidak digunakan). Sebaliknya, 'visualisasi' diwujudkan melalui arsitektur informasi dan komponen UI. Pilihan: [Informasi: Prosedur reservasi] -> [Tujuan: Membedakan alur kerja] -> [Metode: Kartu dan Tab (HTML/Tailwind)] -> [Interaksi: Klik untuk menampilkan detail] -> [Justifikasi: Mencegah kelebihan informasi dan memfokuskan pengguna]. [Informasi: Kriteria TO] -> [Tujuan: Memvalidasi kelengkapan] -> [Metode: Checklist Interaktif (HTML/JS)] -> [Interaksi: Centang item, reset] -> [Justifikasi: Mengubah referensi menjadi alat fungsional untuk mengurangi kesalahan]. [Informasi: Aturan Akomodasi/Transportasi] -> [Tujuan: Menyajikan aturan yang relevan] -> [Metode: Kartu/Blok Teks (HTML/Tailwind)] -> [Interaksi: Navigasi antar bagian utama] -> [Justifikasi: Menyediakan akses cepat ke pedoman spesifik]. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+        }
+        .nav-button.active {
+            background-color: #0d9488; /* teal-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .tab-button.active {
+            border-color: #0d9488; /* teal-600 */
+            color: #0d9488;
+            font-weight: 600;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .checklist-item:has(input:checked) {
+            text-decoration: line-through;
+            color: #64748b; /* slate-500 */
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="min-h-screen container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl">Panduan Operasional BPJS TK</h1>
+            <p class="mt-2 text-lg text-slate-600">Global Service Wisata</p>
+        </header>
+
+        <nav class="flex justify-center flex-wrap gap-2 sm:gap-4 mb-8">
+            <button data-target="reservasi" class="nav-button active text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
+                Reservasi
+            </button>
+            <button data-target="perubahan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
+                Perubahan Tiket
+            </button>
+            <button data-target="validasi-to" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
+                Validasi TO
+            </button>
+            <button data-target="regulasi-tambahan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
+                Regulasi Tambahan
+            </button>
+        </nav>
+
+        <main id="main-content">
+            <!-- Section: Reservasi -->
+            <section id="reservasi" class="content-section active">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Prosedur Reservasi</h2>
+                    <p class="mt-1 text-slate-600">Pilih metode reservasi untuk melihat alur kerja yang sesuai.</p>
+                </div>
+                <div class="w-full max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <!-- Tabs for Reservasi -->
+                    <div class="border-b border-slate-200 mb-6">
+                        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                            <button class="tab-button active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm" data-tab="opsigo">
+                                Via Opsigo
+                            </button>
+                            <button class="tab-button whitespace-nowrap py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 font-medium text-sm" data-tab="email">
+                                Via Email
+                            </button>
+                        </nav>
+                    </div>
+                    <!-- Tab Content -->
+                    <div id="opsigo" class="tab-content active">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+                                <h3 class="font-semibold text-slate-900 mb-2">✈️ Tiket Pesawat & Kereta Api</h3>
+                                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                                    <li>Official Bookers hanya dapat melakukan <strong>pemesanan (booking)</strong>.</li>
+                                    <li><strong>Penerbitan (issue)</strong> dilakukan setelah ada <strong>request to issue</strong> dari Official Bookers.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+                                <h3 class="font-semibold text-slate-900 mb-2">🏨 Pemesanan Hotel</h3>
+                                <p class="text-slate-700">Official Bookers dapat <strong>langsung menerbitkan (issued)</strong> pemesanan hotel.</p>
+                            </div>
+                            <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 col-span-1 md:col-span-2">
+                                <h3 class="font-semibold text-slate-900 mb-2">📝 Pengisian Remarks & Lampiran TO</h3>
+                                <p class="text-slate-700 mb-2">Seluruh pemesanan wajib mengisi kolom <strong>Remarks 1-4</strong> sesuai dengan panduan berikut:</p>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-slate-300 border border-slate-300 rounded-lg">
+                                        <thead class="bg-slate-200">
+                                            <tr>
+                                                <th scope="col" class="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Field Remarks</th>
+                                                <th scope="col" class="px-4 py-2 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Isi Data</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-slate-200">
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-slate-900">PO/TO (Remarks 1)</td>
+                                                <td class="px-4 py-2 text-sm text-slate-700">Nomor Travel Order</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-slate-900">Remarks 2</td>
+                                                <td class="px-4 py-2 text-sm text-slate-700">Unit Kerja Pemilik Anggaran</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-slate-900">Remarks 3</td>
+                                                <td class="px-4 py-2 text-sm text-slate-700">Nama Kegiatan / Program Kerja</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-medium text-slate-900">Remarks 4</td>
+                                                <td class="px-4 py-2 text-sm text-slate-700">Nomor SPPD / SPRIN</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <ul class="list-disc list-inside space-y-1 text-slate-700 mt-3">
+                                    <li>Official Bookers harus melampirkan <strong>TO (Travel Order)</strong> pada kolom PO/TO (Remarks 1).</li>
+                                    <li>Penerbitan tiket pesawat & kereta wajib dilengkapi TO dan Remarks yang sesuai dengan yang dipesan.</li>
+                                    <li>Issued hotel juga wajib melampirkan TO. Jika belum dilampirkan, agen wajib mengirim email ke Official Bookers untuk melengkapi TO di Opsigo.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 col-span-1 md:col-span-2">
+                                <h3 class="font-semibold text-slate-900 mb-2">🧳 Tambahan Bagasi</h3>
+                                <p class="text-slate-700">Diperbolehkan apabila maskapai tidak menyediakan opsi bagasi, dengan maksimal tambahan <strong>10 kg</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="email" class="tab-content hidden">
+                        <div class="space-y-4">
+                            <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">🚄 Kereta Cepat WHOOSH</h3>
+                                <p class="text-slate-700 mt-1">Pemesanan seperti biasa, dan wajib melampirkan <strong>TO</strong>.</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">🌍 Perjalanan Dinas Luar Negeri (PDLN)</h3>
+                                <ul class="list-disc list-inside space-y-1 text-slate-700 mt-1">
+                                    <li>Wajib melampirkan <strong>TO</strong>.</li>
+                                    <li>Wajib CC email ke: <strong>travel.management@bpjsketenagakerjaan.go.id</strong>.</li>
+                                    <li><strong>Konfirmasi terlebih dahulu</strong> dengan tim Travel Management (TM) sebelum proses penerbitan.</li>
+                                    <li>Perhatikan pagu hotel (dalam USD).</li>
+                                    <li>Pada saat invoicing, sertakan capture rate USD yang ada tanggalnya.</li>
+                                </ul>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">🚚 Bantuan Transportasi 3T</h3>
+                                <ul class="list-disc list-inside space-y-1 text-slate-700 mt-1">
+                                    <li>Wajib melampirkan <strong>TO</strong>.</li>
+                                    <li>Membutuhkan <strong>persetujuan dari HCP/TM</strong> sebelum proses penerbitan.</li>
+                                    <li>Wajib CC email ke:
+                                        <ul class="list-none ml-4 mt-1">
+                                            <li>- TM: travel.management@bpjsketenagakerjaan.go.id</li>
+                                            <li>- HCP: mandya.cita@bpjsketenagakerjaan.go.id</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                             <div class="border border-slate-200 rounded-lg p-5">
+                                <h3 class="font-semibold text-slate-900">💰 Penawaran Harga</h3>
+                                <p class="text-slate-700 mt-1">Wajib mencantumkan detail biaya secara rinci: <strong>(Selling Price + SF + VAT)</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Perubahan Tiket -->
+            <section id="perubahan" class="content-section">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Prosedur Refund, Reschedule, Reroute, & Void</h2>
+                    <p class="mt-1 text-slate-600">Langkah-langkah untuk memproses perubahan tiket.</p>
+                </div>
+                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">📋 Pengajuan & Lampiran</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Permintaan diajukan melalui <strong>email</strong>.</li>
+                            <li>Wajib melampirkan <strong>Formulir Refund/Reschedule/Reroute/Void yang sudah ditandatangani</strong>.</li>
+                            <li>Jika tanda tangan menyusul atau ada revisi form, silakan langsung diproses apabila tamu sudah setuju.</li>
+                            <li>Untuk Reschedule/Reroute, lampirkan <strong>TO terbaru</strong>, dan pastikan nomor TO berbeda dengan reservasi awal (sebelum reschedule).</li>
+                            <li>Jika tamu sudah setuju, namun ada perubahan biaya atau penalty, silakan diproses saja agar biaya atau penalty tidak semakin besar. Pada saat pengiriman tiket baru atau konfirmasi refund, dapat diinformasikan biaya atau penalty terbarunya.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">📧 Komunikasi & Biaya</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                             <li>Wajib CC email ke: <strong>travel.management@bpjsketenagakerjaan.go.id</strong>.</li>
+                             <li>Jika timbul biaya, wajib mencantumkan detail harga: <strong>(Biaya/Penalty + SF + VAT)</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Validasi TO -->
+            <section id="validasi-to" class="content-section">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Checklist Validasi Travel Order (TO)</h2>
+                    <p class="mt-1 text-slate-600">Gunakan daftar periksa ini untuk memastikan kelengkapan TO sebelum diproses.</p>
+                </div>
+                <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <div class="flow-root">
+                        <div id="checklist-container" class="-my-4 divide-y divide-slate-200">
+                            <div class="py-4 flex items-center space-x-4 checklist-item">
+                                <input id="check1" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+                                <label for="check1" class="flex-1 min-w-0">
+                                    <p class="font-medium text-slate-800">Nomor TO</p>
+                                    <p class="text-sm text-slate-500">Pastikan terdapat nomor TO, harus sama dengan yang di Remarks 1 (PO/TO).</p>
+                                </label>
+                            </div>
+                            <div class="py-4 flex items-center space-x-4 checklist-item">
+                                <input id="check2" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+                                <label for="check2" class="flex-1 min-w-0">
+                                    <p class="font-medium text-slate-800">Nama Kegiatan</p>
+                                    <p class="text-sm text-slate-500">Biasanya terdapat di Kolom Nama Mata Anggaran / Program Kerja / Nama Detil Kegiatan / kolom keterangan di bagian bawah TO.</p>
+                                </label>
+                            </div>
+                            <div class="py-4 flex items-center space-x-4 checklist-item">
+                                <input id="check3" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+                                <label for="check3" class="flex-1 min-w-0">
+                                    <p class="font-medium text-slate-800">Nomor SPPD/SPRIN</p>
+                                    <p class="text-sm text-slate-500">H-2 keberangkatan boleh issued tanpa nomor SPPD/SPRIN. H-3 ke atas tanpa nomor SPPD/SPRIN, konfirmasi TM dahulu, jangan ditolak. Eksternal tidak perlu nomor SPPD/SPRIN.</p>
+                                </label>
+                            </div>
+                            <div class="py-4 flex items-center space-x-4 checklist-item">
+                                <input id="check4" type="checkbox" class="h-5 w-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+                                <label for="check4" class="flex-1 min-w-0">
+                                    <p class="font-medium text-slate-800">Tanda Tangan</p>
+                                    <p class="text-sm text-slate-500">TO harus sudah ditandatangani oleh pihak yang berwenang. Apabila urgent dan belum ada tanda tangan, konfirmasi ke TM.</p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-right">
+                        <button id="reset-checklist" class="text-sm font-medium text-teal-600 hover:text-teal-800">Reset Checklist</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Regulasi Tambahan -->
+            <section id="regulasi-tambahan" class="content-section">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Regulasi Transportasi & Akomodasi</h2>
+                    <p class="mt-1 text-slate-600">Informasi tambahan terkait kelas transportasi dan akomodasi untuk perjalanan dinas.</p>
+                </div>
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS DALAM NEGERI KARYAWAN</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Penambahan Bagasi untuk maskapai penerbangan yang tidak menyediakan maksimal 10kg untuk satu kali penerbangan.</li>
+                            <li>Jika tidak ada penerbangan langsung, untuk penerbangan transit maksimal di kota transit 1 x 24 jam.</li>
+                            <li>Wajib Berbagi Kamar untuk jabatan: Kepala Bagian/Kepala Bidang/Kepala Kantor Cabang Pembantu (KKCP)/Karyawan non Struktural.</li>
+                            <li>Pemesanan kursi berbayar dapat digunakan pejabat jenjang I untuk kepentingan pendampingan Dewan Pengawas dan Direksi BPJS Ketenagakerjaan.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS LUAR NEGERI KARYAWAN</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Bagasi yang ditanggung untuk maskapai penerbangan yang tidak menyediakan bagasi adalah maksimal 20 kg untuk satu kali penerbangan.</li>
+                            <li>Deputi/Kepala Satuan Pengawas Internal/Sekretaris Dewan Pengawas/Kepala Kantor Wilayah/Jabatan Struktural Setingkat Deputi jika melakukan pemesanan maskapai Luar Negeri yang durasi penerbangannya lebih dari 4 (empat) jam maka dapat menggunakan kelas bisnis.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS LUAR NEGERI KARYAWAN UNTUK NEGARA BERBATASAN LANGSUNG DENGAN INDONESIA (PMI)</h3>
+                        <p class="text-slate-700">Agar dipastikan untuk setiap permintaan pemesanan perjalanan dinas untuk negara berbatasan tersebut (kegiatan PMI), pada travel order juga tertulis kegiatan PMI.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">Lampiran</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li><strong>Peraturan Internal BPJS TK:</strong> <a href="https://drive.google.com/file/d/18pFYhOGCmmefCuliQqXNfs8dd0WG-Xmv/view?usp=sharing" target="_blank" class="text-teal-600 hover:underline">Lihat Dokumen</a></li>
+                            <li><strong>Service Fee:</strong> <a href="https://drive.google.com/file/d/1SyUI6cDKXQ2Zo041bmoLElixTIleMU3s/view?usp=sharing" target="_blank" class="text-teal-600 hover:underline">Lihat Dokumen</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const contentSections = document.querySelectorAll('.content-section');
+            const tabButtons = document.querySelectorAll('#reservasi .tab-button');
+            const tabContents = document.querySelectorAll('#reservasi .tab-content');
+            const resetChecklistButton = document.getElementById('reset-checklist');
+            const checklistItems = document.querySelectorAll('#checklist-container input[type="checkbox"]');
+
+            function showSection(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    }
+                });
+            }
+
+            function showTab(targetId) {
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    if (content.id === targetId) {
+                        content.classList.remove('hidden');
+                    }
+                });
+            }
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = button.dataset.target;
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    showSection(target);
+                });
+            });
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = button.dataset.tab;
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.classList.add('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+                    });
+                    button.classList.add('active');
+                    button.classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-700', 'hover:border-slate-300');
+                    showTab(target);
+                });
+            });
+
+            if (resetChecklistButton) {
+                resetChecklistButton.addEventListener('click', () => {
+                    checklistItems.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
