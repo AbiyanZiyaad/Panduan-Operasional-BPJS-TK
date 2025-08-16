@@ -9,13 +9,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals (Stone, Slate, Teal) -->
-    <!-- Application Structure Plan: Aplikasi ini dirancang dengan struktur berbasis tugas (task-oriented) untuk mempercepat alur kerja agen. Navigasi utama dibagi menjadi empat area fungsional: 'Reservasi', 'Perubahan Tiket', 'Validasi TO', dan 'Regulasi Tambahan'. Pendekatan ini dipilih karena agen biasanya mencari informasi berdasarkan tugas spesifik yang sedang dikerjakan. 'Reservasi' menggunakan sub-navigasi (tab) untuk memisahkan alur kerja Opsigo dan Email. 'Validasi TO' diubah menjadi checklist interaktif untuk mengubah dokumen pasif menjadi alat kerja aktif, meningkatkan akurasi dan efisiensi. 'Regulasi Tambahan' menampung aturan baru terkait transportasi dan akomodasi. Struktur ini secara fundamental lebih intuitif dan cepat daripada menelusuri dokumen linear. -->
-    <!-- Visualization & Content Choices: Mengingat kontennya bersifat prosedural dan kualitatif, tidak ada data kuantitatif untuk divisualisasikan dengan grafik (Chart.js tidak digunakan). Sebaliknya, 'visualisasi' diwujudkan melalui arsitektur informasi dan komponen UI. Pilihan: [Informasi: Prosedur reservasi] -> [Tujuan: Membedakan alur kerja] -> [Metode: Kartu dan Tab (HTML/Tailwind)] -> [Interaksi: Klik untuk menampilkan detail] -> [Justifikasi: Mencegah kelebihan informasi dan memfokuskan pengguna]. [Informasi: Kriteria TO] -> [Tujuan: Memvalidasi kelengkapan] -> [Metode: Checklist Interaktif (HTML/JS)] -> [Interaksi: Centang item, reset] -> [Justifikasi: Mengubah referensi menjadi alat fungsional untuk mengurangi kesalahan]. [Informasi: Aturan Akomodasi/Transportasi] -> [Tujuan: Menyajikan aturan yang relevan] -> [Metode: Kartu/Blok Teks (HTML/Tailwind)] -> [Interaksi: Navigasi antar bagian utama] -> [Justifikasi: Menyediakan akses cepat ke pedoman spesifik]. -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang dengan struktur berbasis tugas (task-oriented) untuk mempercepat alur kerja agen. Navigasi utama dibagi menjadi lima area fungsional: 'Reservasi', 'Perubahan Tiket', 'Validasi TO', 'Regulasi Tambahan', dan 'Penanganan Penolakan'. Pendekatan ini dipilih karena agen biasanya mencari informasi berdasarkan tugas spesifik yang sedang dikerjakan. 'Reservasi' menggunakan sub-navigasi (tab) untuk memisahkan alur kerja Opsigo dan Email. 'Validasi TO' diubah menjadi checklist interaktif untuk mengubah dokumen pasif menjadi alat kerja aktif, meningkatkan akurasi dan efisiensi. 'Regulasi Tambahan' menampung aturan baru terkait transportasi dan akomodasi. Bagian 'Penanganan Penolakan' ditambahkan sebagai panduan umum untuk menghadapi penolakan dari tim TC. Struktur ini secara fundamental lebih intuitif dan cepat daripada menelusuri dokumen linear. -->
+    <!-- Visualization & Content Choices: Mengingat kontennya bersifat prosedural dan kualitatif, tidak ada data kuantitatif untuk divisualisasikan dengan grafik (Chart.js tidak digunakan). Sebaliknya, 'visualisasi' diwujudkan melalui arsitektur informasi dan komponen UI. Pilihan: [Informasi: Prosedur reservasi] -> [Tujuan: Membedakan alur kerja] -> [Metode: Kartu dan Tab (HTML/Tailwind)] -> [Interaksi: Klik untuk menampilkan detail] -> [Justifikasi: Mencegah kelebihan informasi dan memfokuskan pengguna]. [Informasi: Kriteria TO] -> [Tujuan: Memvalidasi kelengkapan] -> [Metode: Checklist Interaktif (HTML/JS)] -> [Interaksi: Centang item, reset] -> [Justifikasi: Mengubah referensi menjadi alat fungsional untuk mengurangi kesalahan]. [Informasi: Aturan Akomodasi/Transportasi] -> [Tujuan: Menyajikan aturan yang relevan] -> [Metode: Kartu/Blok Teks (HTML/Tailwind)] -> [Interaksi: Navigasi antar bagian utama] -> [Justifikasi: Menyediakan akses cepat ke pedoman spesifik]. [Informasi: Penanganan Penolakan TC] -> [Tujuan: Memberikan instruksi tindakan pasca-penolakan] -> [Metode: Blok Teks Informatif (HTML/Tailwind)] -> [Interaksi: Navigasi ke bagian ini] -> [Justifikasi: Menyoroti praktik terbaik untuk resolusi masalah]. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* slate-50 */
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+            position: relative; /* For absolute positioning of animations */
+            
+            /* Background removed, back to solid color */
+            background-image: none; 
+            opacity: 1; /* Ensure full opacity */
         }
         .nav-button {
             transition: all 0.3s ease;
@@ -25,6 +31,9 @@
             color: white;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
+        .tab-button {
+            transition: all 0.2s ease-in-out;
+        }
         .tab-button.active {
             border-color: #0d9488; /* teal-600 */
             color: #0d9488;
@@ -32,17 +41,133 @@
         }
         .content-section {
             display: none;
+            opacity: 0; /* Start hidden for animation */
+            transform: translateY(20px); /* Start slightly below for slide-in */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Smooth transition for entry */
         }
         .content-section.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
         .checklist-item:has(input:checked) {
             text-decoration: line-through;
             color: #64748b; /* slate-500 */
         }
+
+        /* Helicopter Animation */
+        .helicopter {
+            position: absolute;
+            font-size: 3rem;
+            color: #94a3b8; /* slate-400 */
+            z-index: 0; /* Behind content */
+            opacity: 0.4; /* Slightly higher opacity */
+            text-shadow: 0 0 5px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+
+        @keyframes flyAcrossLeft {
+            0% {
+                right: -10%; /* Start off-screen right */
+                transform: translateY(0px) rotateY(0deg) rotateZ(0deg); /* Facing left */
+                opacity: 0.4;
+            }
+            25% {
+                transform: translateY(-25px) rotateY(5deg) rotateZ(2deg); /* More pronounced vertical and slight rotation */
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(0px) rotateY(0deg) rotateZ(0deg);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translateY(25px) rotateY(-5deg) rotateZ(-2deg); /* More pronounced vertical and slight rotation */
+                opacity: 0.5;
+            }
+            100% {
+                right: 110%; /* End off-screen left */
+                transform: translateY(0px) rotateY(0deg) rotateZ(0deg);
+                opacity: 0.4;
+            }
+        }
+
+        .helicopter-1 { animation: flyAcrossLeft 20s linear infinite; animation-delay: 0s; top: 20px; font-size: 3rem; }
+        .helicopter-2 { animation: flyAcrossLeft 22s linear infinite; animation-delay: 4s; top: 50px; font-size: 2.5rem; }
+        .helicopter-3 { animation: flyAcrossLeft 18s linear infinite; animation-delay: 8s; top: 80px; font-size: 3.2rem; }
+        .helicopter-4 { animation: flyAcrossLeft 21s linear infinite; animation-delay: 12s; top: 35px; font-size: 2.8rem; }
+        .helicopter-5 { animation: flyAcrossLeft 19s linear infinite; animation-delay: 16s; top: 65px; font-size: 3.1rem; }
+
+
+        /* Train Animation */
+        .train {
+            position: absolute;
+            font-size: 3rem;
+            color: #64748b; /* slate-500 */
+            z-index: 1; /* Above the track */
+            opacity: 0.5;
+            text-shadow: 0 0 5px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+
+        @keyframes trainAcross {
+            0% {
+                right: -10%;
+                bottom: 10px; /* Position on the track */
+                transform: translateY(0) rotateZ(0deg);
+                opacity: 0.5;
+            }
+            25% {
+                transform: translateY(5px) rotateZ(-0.5deg); /* Slight vertical movement and tilt */
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(0) rotateZ(0deg);
+                opacity: 0.7;
+            }
+            75% {
+                transform: translateY(-5px) rotateZ(0.5deg); /* Slight vertical movement and tilt */
+                opacity: 0.6;
+            }
+            100% {
+                right: 110%;
+                bottom: 10px; /* Position on the track */
+                transform: translateY(0) rotateZ(0deg);
+                opacity: 0.5;
+            }
+        }
+
+        .train-1 { animation: trainAcross 25s linear infinite; animation-delay: 0s; font-size: 3rem; }
+        .train-2 { animation: trainAcross 28s linear infinite; animation-delay: 9s; font-size: 2.5rem; }
+        .train-3 { animation: trainAcross 23s linear infinite; animation-delay: 18s; font-size: 3.2rem; }
+
+
+        /* Responsive adjustments for animations */
+        @media (max-width: 768px) {
+            .helicopter, .train {
+                font-size: 1.8rem; /* Smaller on mobile */
+                opacity: 0.2;
+            }
+            .helicopter-1, .helicopter-2, .helicopter-3, .helicopter-4, .helicopter-5 {
+                animation-duration: 15s; /* Faster on mobile */
+                top: 5px; /* Adjust position */
+            }
+            .train-1, .train-2, .train-3 {
+                animation-duration: 18s; /* Faster on mobile */
+                bottom: 5px; /* Adjust position */
+            }
+            /* Hide multiple instances on small screens to avoid clutter */
+            .helicopter-2, .helicopter-3, .helicopter-4, .helicopter-5, .train-2, .train-3 {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body class="text-slate-800">
+
+    <!-- Animated Helicopters -->
+    <div class="helicopter helicopter-1">🚁</div>
+    <div class="helicopter helicopter-2">🚁</div>
+    <div class="helicopter helicopter-3">🚁</div>
+    <div class="helicopter helicopter-4">🚁</div>
+    <div class="helicopter helicopter-5">🚁</div>
 
     <div class="min-h-screen container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <header class="text-center mb-8">
@@ -62,6 +187,9 @@
             </button>
             <button data-target="regulasi-tambahan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
                 Regulasi Tambahan
+            </button>
+            <button data-target="penanganan-penolakan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
+                Penanganan Penolakan
             </button>
         </nav>
 
@@ -92,6 +220,7 @@
                                 <ul class="list-disc list-inside space-y-1 text-slate-700">
                                     <li>Official Bookers hanya dapat melakukan <strong>pemesanan (booking)</strong>.</li>
                                     <li><strong>Penerbitan (issue)</strong> dilakukan setelah ada <strong>request to issue</strong> dari Official Bookers.</li>
+                                    <li>Untuk penerbangan Garuda, sangat dianjurkan menggunakan <strong>Kelas Y</strong> karena fleksibilitasnya. Apabila Official Bookers mengajukan <em>request to issue</em> dengan kelas selain Y, permintaan dapat ditolak. Mohon sarankan penggunaan Kelas Y untuk mempermudah proses <em>reschedule</em> di kemudian hari.</li>
                                 </ul>
                             </div>
                             <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
@@ -137,7 +266,10 @@
                             </div>
                             <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 col-span-1 md:col-span-2">
                                 <h3 class="font-semibold text-slate-900 mb-2">🧳 Tambahan Bagasi</h3>
-                                <p class="text-slate-700">Diperbolehkan apabila maskapai tidak menyediakan opsi bagasi, dengan maksimal tambahan <strong>10 kg</strong>.</p>
+                                <ul class="list-disc list-inside space-y-1 text-slate-700">
+                                    <li>Diperbolehkan apabila maskapai tidak menyediakan opsi bagasi, dengan maksimal tambahan <strong>10 kg</strong>.</li>
+                                    <li><strong>Pengecualian DEWAS dan Direksi:</strong> Tidak ada batasan 10 kg untuk tambahan bagasi bagi DEWAS dan Direksi.</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -194,6 +326,7 @@
                             <li>Jika tanda tangan menyusul atau ada revisi form, silakan langsung diproses apabila tamu sudah setuju.</li>
                             <li>Untuk Reschedule/Reroute, lampirkan <strong>TO terbaru</strong>, dan pastikan nomor TO berbeda dengan reservasi awal (sebelum reschedule).</li>
                             <li>Jika tamu sudah setuju, namun ada perubahan biaya atau penalty, silakan diproses saja agar biaya atau penalty tidak semakin besar. Pada saat pengiriman tiket baru atau konfirmasi refund, dapat diinformasikan biaya atau penalty terbarunya.</li>
+                            <li>Untuk saat ini, nominal biaya <em>reschedule</em> agar diinput sesuai sistem saja, tidak perlu di-<em>update</em> secara manual oleh Travel Consultant (Catatan: Ketentuan ini dapat berubah sewaktu-waktu).</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
@@ -262,9 +395,9 @@
                         <h3 class="font-semibold text-lg text-slate-900 mb-3">PERATURAN KELAS TRANSPORTASI DAN AKOMODASI UNTUK PERJALANAN DINAS DALAM NEGERI KARYAWAN</h3>
                         <ul class="list-disc list-inside space-y-2 text-slate-700">
                             <li>Penambahan Bagasi untuk maskapai penerbangan yang tidak menyediakan maksimal 10kg untuk satu kali penerbangan.</li>
-                            <li>Jika tidak ada penerbangan langsung, untuk penerbangan transit maksimal di kota transit 1 x 24 jam.</li>
-                            <li>Wajib Berbagi Kamar untuk jabatan: Kepala Bagian/Kepala Bidang/Kepala Kantor Cabang Pembantu (KKCP)/Karyawan non Struktural.</li>
-                            <li>Pemesanan kursi berbayar dapat digunakan pejabat jenjang I untuk kepentingan pendampingan Dewan Pengawas dan Direksi BPJS Ketenagakerjaan.</li>
+                            <li>Jika tidak ada penerbangan langsung, untuk penerbangan <em>transit</em> maksimal di kota <em>transit</em> 1 x 24 jam.</li>
+                            <li>Wajib <em>Sharing</em> Kamar untuk jabatan: Kepala Bagian/Kepala Bidang/Kepala Kantor Cabang Pembantu (KKCP)/Karyawan non Struktural.</li>
+                            <li><em>Booking seat</em> berbayar dapat digunakan pejabat jenjang I untuk kepentingan pendampingan Dewan Pengawas dan Direksi BPJS Ketenagakerjaan.</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
@@ -287,8 +420,28 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Section: Panduan Penanganan Penolakan -->
+            <section id="penanganan-penolakan" class="content-section">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Panduan Penanganan Penolakan</h2>
+                    <p class="mt-1 text-slate-600">Prosedur dan praktik terbaik saat menghadapi penolakan dari tim Travel Consultant.</p>
+                </div>
+                <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Analisis Penolakan Menyeluruh</h3>
+                    <p class="text-slate-700 mb-4">Saat menerima penolakan dari tim Travel Consultant, jangan hanya fokus pada satu poin alasan penolakan. Lakukan pemeriksaan <strong>menyeluruh</strong> terhadap seluruh detail permintaan dan Travel Order (TO) untuk mengidentifikasi <strong>semua</strong> kekurangan yang ada. Pastikan semua persyaratan dipenuhi sebelum mengajukan ulang untuk menghindari penolakan berulang.</p>
+
+                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Prioritas Ketersediaan Kursi untuk Keberangkatan Mendekat</h3>
+                    <p class="text-slate-700">Jika Anda hendak melakukan "Reject" untuk keberangkatan di hari yang sama atau lusa, pastikan terlebih dahulu <strong>ketersediaan kursi</strong> untuk penerbangan atau transportasi tersebut. Hal ini krusial untuk mencegah komplain di kemudian hari akibat kehabisan kursi dengan alasan penolakan dari Global Service Wisata (GSW).</p>
+                </div>
+            </section>
         </main>
     </div>
+
+    <!-- Animated Trains -->
+    <div class="train train-1">🚅</div>
+    <div class="train train-2">🚅</div>
+    <div class="train train-3">🚅</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -302,6 +455,8 @@
             function showSection(targetId) {
                 contentSections.forEach(section => {
                     section.classList.remove('active');
+                    // Force reflow to restart animation
+                    void section.offsetWidth; 
                     if (section.id === targetId) {
                         section.classList.add('active');
                     }
