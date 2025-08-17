@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutrals (Stone, Slate, Teal) -->
-    <!-- Application Structure Plan: Aplikasi ini dirancang dengan struktur berbasis tugas (task-oriented) untuk mempercepat alur kerja agen. Navigasi utama dibagi menjadi enam area fungsional: 'Reservasi', 'Perubahan Tiket', 'Validasi TO', 'Regulasi Tambahan', 'Reject', dan 'Invoicing'. Pendekatan ini dipilih karena agen biasanya mencari informasi berdasarkan tugas spesifik yang sedang dikerjakan. 'Reservasi' menggunakan sub-navigasi (tab) untuk memisahkan alur kerja Opsigo dan Email. 'Validasi TO' diubah menjadi checklist interaktif untuk mengubah dokumen pasif menjadi alat kerja aktif, meningkatkan akurasi dan efisiensi. 'Regulasi Tambahan' menampung aturan baru terkait transportasi dan akomodasi. Bagian 'Reject' ditambahkan sebagai panduan umum untuk menghadapi penolakan dari tim TC, termasuk kriteria dan pengecualian. Bagian 'Invoicing' ditambahkan sebagai proses terpisah yang krusial. Struktur ini secara fundamental lebih intuitif dan cepat daripada menelusuri dokumen linear. -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang dengan struktur berbasis tugas (task-oriented) untuk mempercepat alur kerja agen. Navigasi utama dibagi menjadi enam area fungsional: 'Reservasi', 'Validasi TO', 'Reject', 'Perubahan Tiket', 'Regulasi Tambahan', dan 'Invoicing'. Pendekatan ini dipilih karena agen biasanya mencari informasi berdasarkan tugas spesifik yang sedang dikerjakan. 'Reservasi' menggunakan sub-navigasi (tab) untuk memisahkan alur kerja Opsigo dan Email. 'Validasi TO' diubah menjadi checklist interaktif untuk mengubah dokumen pasif menjadi alat kerja aktif, meningkatkan akurasi dan efisiensi. 'Regulasi Tambahan' menampung aturan baru terkait transportasi dan akomodasi. Bagian 'Reject' ditambahkan sebagai panduan umum untuk menghadapi penolakan dari tim TC, termasuk kriteria dan pengecualian. Bagian 'Invoicing' ditambahkan sebagai proses terpisah yang krusial. Struktur ini secara fundamental lebih intuitif dan cepat daripada menelusuri dokumen linear. -->
     <!-- Visualization & Content Choices: Mengingat kontennya bersifat prosedural dan kualitatif, tidak ada data kuantitatif untuk divisualisasikan dengan grafik (Chart.js tidak digunakan). Sebaliknya, 'visualisasi' diwujudkan melalui arsitektur informasi dan komponen UI. Pilihan: [Informasi: Prosedur reservasi] -> [Tujuan: Membedakan alur kerja] -> [Metode: Kartu dan Tab (HTML/Tailwind)] -> [Interaksi: Klik untuk menampilkan detail] -> [Justifikasi: Mencegah kelebihan informasi dan memfokuskan pengguna]. [Informasi: Kriteria TO] -> [Tujuan: Memvalidasi kelengkapan] -> [Metode: Checklist Interaktif (HTML/JS)] -> [Interaksi: Centang item, reset] -> [Justifikasi: Mengubah referensi menjadi alat fungsional untuk mengurangi kesalahan]. [Informasi: Aturan Akomodasi/Transportasi] -> [Tujuan: Menyajikan aturan yang relevan] -> [Metode: Kartu/Blok Teks (HTML/Tailwind)] -> [Interaksi: Navigasi antar bagian utama] -> [Justifikasi: Menyediakan akses cepat ke pedoman spesifik]. [Informasi: Penanganan Reject] -> [Tujuan: Memberikan instruksi tindakan pasca-penolakan] -> [Metode: Blok Teks Informatif (HTML/Tailwind)] -> [Interaksi: Navigasi ke bagian ini] -> [Justifikasi: Menyoroti praktik terbaik untuk resolusi masalah]. [Informasi: Proses Invoicing] -> [Tujuan: Memberikan panduan detail invoicing] -> [Metode: Daftar Poin (HTML/Tailwind)] -> [Interaksi: Navigasi ke bagian ini] -> [Justifikasi: Menyediakan referensi cepat untuk proses penagihan]. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -19,12 +19,20 @@
             overflow-x: hidden; /* Prevent horizontal scroll from animations */
             position: relative; /* For absolute positioning of animations */
             
-            /* Background removed, back to solid color */
-            background-image: none; 
+            /* Subtle diagonal line pattern for background - Reverted */
+            background-image: linear-gradient(45deg, rgba(209, 213, 219, 0.08) 25%, transparent 25%, transparent 75%, rgba(209, 213, 219, 0.08) 75%, rgba(209, 213, 219, 0.08)),
+                              linear-gradient(-45deg, rgba(209, 213, 219, 0.08) 25%, transparent 25%, transparent 75%, rgba(209, 213, 219, 0.08) 75%, rgba(209, 213, 219, 0.08));
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
             opacity: 1; /* Ensure full opacity */
         }
         .nav-button {
             transition: all 0.3s ease;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* Default subtle shadow */
+        }
+        .nav-button:hover {
+            transform: translateY(-2px); /* Lift effect */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* More pronounced shadow */
         }
         .nav-button.active {
             background-color: #0d9488; /* teal-600 */
@@ -34,11 +42,28 @@
         .tab-button {
             transition: all 0.2s ease-in-out;
         }
+        .tab-button:hover {
+            color: #0d9488; /* Teal color on hover */
+            border-color: #0d9488; /* Teal border on hover */
+        }
         .tab-button.active {
             border-color: #0d9488; /* teal-600 */
             color: #0d9488;
             font-weight: 600;
         }
+        /* Apply hover effects to content cards */
+        .w-full.max-w-4xl.mx-auto.bg-white.p-6.rounded-xl.shadow-lg.border.border-slate-200,
+        .max-w-xl.mx-auto.bg-white.p-6.rounded-xl.shadow-lg.border.border-slate-200,
+        .bg-white.p-6.rounded-xl.shadow-lg.border.border-slate-200 {
+            transition: all 0.3s ease-in-out;
+        }
+        .w-full.max-w-4xl.mx-auto.bg-white.p-6.rounded-xl.shadow-lg.border.border-slate-200:hover,
+        .max-w-xl.mx-auto.bg-white.p-6.rounded-xl.shadow-lg.border.border-slate-200:hover,
+        .bg-white.p-6.rounded-xl.shadow-lg.border.border-slate-200:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
         .content-section {
             display: none;
             opacity: 0; /* Start hidden for animation */
@@ -179,17 +204,17 @@
             <button data-target="reservasi" class="nav-button active text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
                 Reservasi
             </button>
-            <button data-target="perubahan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
-                Perubahan Tiket
-            </button>
             <button data-target="validasi-to" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
                 Validasi TO
             </button>
-            <button data-target="regulasi-tambahan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
-                Regulasi Tambahan
-            </button>
             <button data-target="reject-reservasi" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
                 Reject Reservasi
+            </button>
+            <button data-target="perubahan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
+                Perubahan Tiket
+            </button>
+            <button data-target="regulasi-tambahan" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
+                Regulasi Tambahan
             </button>
             <button data-target="invoicing" class="nav-button text-sm sm:text-base font-medium py-2 px-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:bg-teal-50">
                 Invoicing
@@ -237,7 +262,7 @@
                                 </ul>
                             </div>
                             <div class="border border-slate-200 rounded-lg p-5">
-                                <h3 class="font-semibold text-slate-900">� Bantuan Transportasi 3T</h3>
+                                <h3 class="font-semibold text-slate-900">🚚 Bantuan Transportasi 3T</h3>
                                 <ul class="list-disc list-inside space-y-1 text-slate-700 mt-1">
                                     <li>Wajib melampirkan <strong>TO</strong>.</li>
                                     <li>Membutuhkan <strong>persetujuan dari HCP/TM</strong> sebelum proses penerbitan.</li>
@@ -318,34 +343,6 @@
                 </div>
             </section>
 
-            <!-- Section: Perubahan Tiket -->
-            <section id="perubahan" class="content-section">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-semibold text-slate-900">Prosedur Refund, Reschedule, Reroute, & Void</h2>
-                    <p class="mt-1 text-slate-600">Langkah-langkah untuk memproses perubahan tiket.</p>
-                </div>
-                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
-                        <h3 class="font-semibold text-lg text-slate-900 mb-3">📋 Pengajuan & Lampiran</h3>
-                        <ul class="list-disc list-inside space-y-2 text-slate-700">
-                            <li>Permintaan diajukan melalui <strong>email</strong>.</li>
-                            <li>Wajib melampirkan <strong>Formulir Refund/Reschedule/Reroute/Void yang sudah ditandatangani</strong>.</li>
-                            <li>Jika tanda tangan menyusul atau ada revisi form, silakan langsung diproses apabila tamu sudah setuju.</li>
-                            <li>Untuk Reschedule/Reroute, lampirkan <strong>TO terbaru</strong>, dan pastikan nomor TO berbeda dengan reservasi awal (sebelum reschedule).</li>
-                            <li>Jika tamu sudah setuju, namun ada perubahan biaya atau penalty, silakan diproses saja agar biaya atau penalty tidak semakin besar. Pada saat pengiriman tiket baru atau konfirmasi refund, dapat diinformasikan biaya atau penalty terbarunya.</li>
-                            <li>Untuk saat ini, nominal biaya <em>reschedule</em> agar diinput sesuai sistem saja, tidak perlu di-<em>up selling</em> secara manual oleh Travel Consultant (Catatan: Ketentuan ini dapat berubah sewaktu-waktu).</li>
-                        </ul>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
-                        <h3 class="font-semibold text-lg text-slate-900 mb-3">📧 Komunikasi & Biaya</h3>
-                        <ul class="list-disc list-inside space-y-2 text-slate-700">
-                             <li>Wajib CC email ke: <strong>travel.management@bpjsketenagakerjaan.go.id</strong>.</li>
-                             <li>Jika timbul biaya, wajib mencantumkan detail harga: <strong>(Biaya/Penalty + SF + VAT)</strong>.</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
             <!-- Section: Validasi TO -->
             <section id="validasi-to" class="content-section">
                 <div class="text-center mb-6">
@@ -398,6 +395,61 @@
                 </div>
             </section>
 
+            <!-- Section: Reject Reservasi -->
+            <section id="reject-reservasi" class="content-section">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Kriteria Reject Reservasi</h2>
+                    <p class="mt-1 text-slate-600">Panduan untuk memahami dan menangani penolakan reservasi.</p>
+                </div>
+                <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Reservasi Dapat Di-Reject Apabila:</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700 mb-4">
+                        <li>Tidak ada <em>remarks</em> dan Travel Order (TO).</li>
+                        <li>Travel Order (TO) tidak ditandatangani.</li>
+                        <li><em>Remarks</em> tidak sesuai dengan Travel Order (TO).</li>
+                        <li>Pemesanan tidak sesuai dengan Travel Order (TO).</li>
+                        <li>Penerbangan Garuda tidak menggunakan Kelas Y (Flexible).</li>
+                    </ul>
+
+                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Pengecualian Kondisi Urgent:</h3>
+                    <p class="text-slate-700">Jika terjadi kondisi <em>urgent</em> seperti mendekati batas waktu <em>time limit</em> atau kursi sudah habis, Travel Consultant diperbolehkan untuk memperbaiki <em>remarks</em> dan melanjutkan proses <em>issued</em>, selama Travel Order (TO) sudah tersedia dan lengkap.</p>
+
+                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Analisis Reject Menyeluruh oleh Travel Consultant:</h3>
+                    <p class="text-slate-700 mb-4">Saat melakukan <em>reject</em>, Travel Consultant diharapkan untuk tidak hanya fokus pada satu poin alasan <em>reject</em>. Lakukan pemeriksaan <strong>menyeluruh</strong> terhadap seluruh detail permintaan dan Travel Order (TO) untuk mengidentifikasi <strong>semua</strong> kekurangan yang ada. Pastikan semua persyaratan dipenuhi sebelum melakukan <em>reject</em> untuk menghindari <em>reject</em> berulang.</p>
+
+                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Prioritas Ketersediaan Kursi untuk Keberangkatan Mendekat:</h3>
+                    <p class="text-slate-700">Jika Anda hendak melakukan "<em>Reject</em>" untuk keberangkatan di hari yang sama atau lusa, pastikan terlebih dahulu <strong>ketersediaan kursi</strong> untuk penerbangan atau transportasi tersebut. Hal ini krusial untuk mencegah komplain di kemudian hari akibat kehabisan kursi dengan alasan <em>reject</em> dari Global Service Wisata (GSW).</p>
+                </div>
+            </section>
+
+            <!-- Section: Perubahan Tiket -->
+            <section id="perubahan" class="content-section">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Prosedur Refund, Reschedule, Reroute, & Void</h2>
+                    <p class="mt-1 text-slate-600">Langkah-langkah untuk memproses perubahan tiket.</p>
+                </div>
+                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">📋 Pengajuan & Lampiran</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li>Permintaan diajukan melalui <strong>email</strong>.</li>
+                            <li>Wajib melampirkan <strong>Formulir Refund/Reschedule/Reroute/Void yang sudah ditandatangani</strong>.</li>
+                            <li>Jika tanda tangan menyusul atau ada revisi form, silakan langsung diproses apabila tamu sudah setuju.</li>
+                            <li>Untuk Reschedule/Reroute, lampirkan <strong>TO terbaru</strong>, dan pastikan nomor TO berbeda dengan reservasi awal (sebelum reschedule).</li>
+                            <li>Jika tamu sudah setuju, namun ada perubahan biaya atau penalty, silakan diproses saja agar biaya atau penalty tidak semakin besar. Pada saat pengiriman tiket baru atau konfirmasi refund, dapat diinformasikan biaya atau penalty terbarunya.</li>
+                            <li>Untuk saat ini, nominal biaya <em>reschedule</em> agar diinput sesuai sistem saja, tidak perlu di-<em>up selling</em> secara manual oleh Travel Consultant (Catatan: Ketentuan ini dapat berubah sewaktu-waktu).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-lg text-slate-900 mb-3">📧 Komunikasi & Biaya</h3>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                             <li>Wajib CC email ke: <strong>travel.management@bpjsketenagakerjaan.go.id</strong>.</li>
+                             <li>Jika timbul biaya, wajib mencantumkan detail harga: <strong>(Biaya/Penalty + SF + VAT)</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
             <!-- Section: Regulasi Tambahan -->
             <section id="regulasi-tambahan" class="content-section">
                 <div class="text-center mb-6">
@@ -437,33 +489,6 @@
                             <li><strong>Service Fee:</strong> <a href="https://drive.google.com/file/d/1SyUI6cDKXQ2Zo041bmoLElixTIleMU3s/view?usp=sharing" target="_blank" class="text-teal-600 hover:underline">Lihat Dokumen</a></li>
                         </ul>
                     </div>
-                </div>
-            </section>
-
-            <!-- Section: Reject Reservasi -->
-            <section id="reject-reservasi" class="content-section">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-semibold text-slate-900">Kriteria Reject Reservasi</h2>
-                    <p class="mt-1 text-slate-600">Panduan untuk memahami dan menangani penolakan reservasi.</p>
-                </div>
-                <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg border border-slate-200">
-                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Reservasi Dapat Di-Reject Apabila:</h3>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700 mb-4">
-                        <li>Tidak ada <em>remarks</em> dan Travel Order (TO).</li>
-                        <li>Travel Order (TO) tidak ditandatangani.</li>
-                        <li><em>Remarks</em> tidak sesuai dengan Travel Order (TO).</li>
-                        <li>Pemesanan tidak sesuai dengan Travel Order (TO).</li>
-                        <li>Penerbangan Garuda tidak menggunakan Kelas Y (Flexible).</li>
-                    </ul>
-
-                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Pengecualian Kondisi Urgent:</h3>
-                    <p class="text-slate-700">Jika terjadi kondisi <em>urgent</em> seperti mendekati batas waktu <em>time limit</em> atau kursi sudah habis, Travel Consultant diperbolehkan untuk memperbaiki <em>remarks</em> dan melanjutkan proses <em>issued</em>, selama Travel Order (TO) sudah tersedia dan lengkap.</p>
-
-                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Analisis Reject Menyeluruh oleh Travel Consultant:</h3>
-                    <p class="text-slate-700 mb-4">Saat melakukan <em>reject</em>, Travel Consultant diharapkan untuk tidak hanya fokus pada satu poin alasan <em>reject</em>. Lakukan pemeriksaan <strong>menyeluruh</strong> terhadap seluruh detail permintaan dan Travel Order (TO) untuk mengidentifikasi <strong>semua</strong> kekurangan yang ada. Pastikan semua persyaratan dipenuhi sebelum melakukan <em>reject</em> untuk menghindari <em>reject</em> berulang.</p>
-
-                    <h3 class="font-semibold text-lg text-slate-900 mb-3">Prioritas Ketersediaan Kursi untuk Keberangkatan Mendekat:</h3>
-                    <p class="text-slate-700">Jika Anda hendak melakukan "<em>Reject</em>" untuk keberangkatan di hari yang sama atau lusa, pastikan terlebih dahulu <strong>ketersediaan kursi</strong> untuk penerbangan atau transportasi tersebut. Hal ini krusial untuk mencegah komplain di kemudian hari akibat kehabisan kursi dengan alasan <em>reject</em> dari Global Service Wisata (GSW).</p>
                 </div>
             </section>
 
@@ -563,4 +588,3 @@
 
 </body>
 </html>
-�
